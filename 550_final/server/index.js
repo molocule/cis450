@@ -32,6 +32,8 @@ app.get('/defining-char', routes.getDefiningChar);
 
 app.get('/happy/:type/:d/:e/:l/:s/:v', routes.getHappy);
 
+app.get('/song-rec/:song', routes.getRecs);
+
 app.get('/getall', routes.getAll);
 
 app.listen(8081, () => {

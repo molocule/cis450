@@ -362,7 +362,58 @@ const getCharacteristics= (req, res) => {
   
 
 
-
+  const getRecs = (req, res) => {
+    var song = req.params.song;
+    console.log(song)
+    const query = `
+    WITH targetSID as (
+      SELECT SID
+        FROM Song 
+        WHERE name LIKE  '%${song}%'
+        LIMIT 1
+    ), 
+    playlistOfSong as (
+      SELECT Playlist.PID, Playlist.SID
+      FROM Playlist 
+      WHERE Playlist.PID IN (
+          SELECT PID FROM Playlist WHERE SID = (SELECT * FROM targetSID)
+        ) 
+      AND SID != (SELECT * FROM targetSID)
+    ),
+    targetCount as (
+        SELECT *
+        FROM Characteristics
+        WHERE SID = (SELECT * FROM targetSID)
+    ),
+    songCounts as (
+      SELECT SID, COUNT(*) as num
+      FROM playlistOfSong
+      GROUP BY SID
+    ),
+    songChar as (
+        SELECT Song.SID, Song.name, Song.artist, songCounts.num, acousticness, danceability, energy, instrumentalness, valence, tempo, liveness, loudness, speechiness
+        FROM songCounts NATURAL JOIN Song NATURAL JOIN Characteristics
+        ORDER BY songCounts.num DESC
+    ),
+    attribDiff as (
+        SELECT S.SID, S.name, S.artist, S.num, ABS(ABS(S.acousticness - T.acousticness) + ABS(S.danceability - T.danceability) + 
+                    ABS(S.energy - T.energy) + ABS(S.instrumentalness - T.instrumentalness) + 
+                        ABS(S.valence - T.valence) + ABS(S.tempo - T.tempo) + ABS(S.liveness - T.liveness) + 
+                            ABS(S.loudness - T.loudness) + ABS(S.speechiness - T.speechiness)) / S.num as diff
+        FROM songChar S, targetCount T
+    )
+    SELECT name, artist, num
+    FROM attribDiff
+    ORDER BY diff ASC    
+    LIMIT 10;
+    `
+  
+    connection.query(query, (err, rows, fields) => {
+      if (err) console.log(err);
+      else res.json(rows);
+    });
+  };
+  
 
 // (num_grammys, artists)
 
@@ -379,4 +430,5 @@ module.exports = {
   getCharacteristics: getCharacteristics,
   getDefiningChar: getDefiningChar,
   getHappy: getHappy,
+  getRecs: getRecs,
 };
