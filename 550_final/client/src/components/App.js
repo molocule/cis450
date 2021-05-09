@@ -7,6 +7,9 @@ import {
 import Artists from './Artists/Artists';
 import Billboard from './Billboard/Billboard';
 import Home from './Home/Home'
+import Songs from './Songs/Songs'
+import Playlists from './Playlists/Playlists'
+import Characteristics from './Characteristics/Characteristics'
 export default class App extends React.Component {
 
 	render() {
@@ -28,6 +31,21 @@ export default class App extends React.Component {
 							exact
 							path="/Discover Artists"
 							render={() => <Artists/>}
+						/>
+						<Route
+							exact
+							path="/Explore Songs"
+							render={() => <Songs/>}
+						/>
+						<Route
+							exact
+							path="/Uncover New Playlists"
+							render={() => <Playlists/>}
+						/>
+						<Route
+							exact
+							path="/Popular Characteristics"
+							render={() => <Characteristics/>}
 						/>
 					</Switch>
 				</Router>

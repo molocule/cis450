@@ -3,7 +3,7 @@ import '../../style/Billboard.css';
 import PageNavbar from '../PageNavbar';
 import FreqSongsRow from './FreqSongsRow';
 
-export default class Billboard extends React.Component {
+export default class Characteristics extends React.Component {
   constructor(props) {
     super(props);
 
@@ -13,14 +13,9 @@ export default class Billboard extends React.Component {
     };
   };
 
-
-
-  getArtistChar() {
-    
-  }
   componentDidMount() {
         // Send an HTTP request to the server.
-		fetch("http://localhost:8081/freq-songs",
+		fetch("http://localhost:8081/defining-char",
 		{
 		  method: 'GET' // The type of HTTP request.
 		}).then(res => {
@@ -34,41 +29,12 @@ export default class Billboard extends React.Component {
 		  if (!songList) return;
       const FreqSongsRows = songList.map((songObject, i) =>
       <FreqSongsRow
-        playlist_appearances={songObject.playlist_appearances} 
-        name={songObject.name} 
+        playlist_appearances={songObject.c} 
       />
 		);
     this.setState({
         freqSongs: FreqSongsRows
     });
-		}, err => {
-		  console.log(err);
-		});
-
-    // Send an HTTP request to the server.
-		fetch("http://localhost:8081/most-followers",
-		{
-		  method: 'GET' // The type of HTTP request.
-		}).then(res => {
-		  // Convert the response data to a JSON.
-		  return res.json();
-		}, err => {
-		  // Print the error if there is one.
-		  console.log(err);
-		}).then(playlistList => {
-      console.log(playlistList)
-		  if (!playlistList) return;
-      const PopSongsRows = playlistList.map((songObject, i) =>
-        <FreqSongsRow
-          name={songObject.n} 
-        /> 
-      
-		);
-
-    this.setState({
-        popPlaylists: PopSongsRows
-    });
-
 		}, err => {
 		  console.log(err);
 		});
@@ -132,34 +98,3 @@ export default class Billboard extends React.Component {
 		});
 	};
   */
-
-    // getGrammys() {
-  //   // Send an HTTP request to the server.
-	// 	fetch("http://localhost:8081/grammy-artists",
-	// 	{
-	// 	  method: 'GET' // The type of HTTP request.
-	// 	}).then(res => {
-	// 	  // Convert the response data to a JSON.
-	// 	  return res.json();
-	// 	}, err => {
-	// 	  // Print the error if there is one.
-	// 	  console.log(err);
-	// 	}).then(songList => {
-  //     console.log(songList)
-	// 	  if (!songList) return;
-  //     const GrammyRows = songList.map((songObject, i) =>
-	// 		<GrammyRow
-  //       numGrammys={songObject.num_grammys} 
-  //       artists={songObject.artist.replace(/[\[\]']+/g,'')} 
-	// 		/> 
-      
-	// 	);
-
-  //   this.setState({
-  //     grammyArtists: GrammyRows
-  //   });
-
-	// 	}, err => {
-	// 	  console.log(err);
-	// 	});
-  // };

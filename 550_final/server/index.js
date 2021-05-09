@@ -9,23 +9,28 @@ app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+//1
 app.get('/grammy-artists', routes.getHighestGrammyArtists);
-
+//2
 app.get('/freq-songs', routes.getFrequentSongsInPlaylist);
-
+//3
 app.get('/most-followers', routes.getSongsPlaylistsMostFollowers);
-
-app.get('/keywords', routes.getSongCharacterstics);
+//4
+app.get('/song/:song', routes.getSongCharacterstics);
 
 app.get('/artist/:singer', routes.getArtistCharacteristics);
 
-app.get('/keywords', routes.getPlaylistCharacteristic);
+app.get('/playlist-rank/:characteristic', routes.getPlaylistCharacteristic);
 
 app.get('/keywords', routes.getFrequentRelatedSongs);
 
 app.get('/playlist/:PID', routes.getPIDSongs);
 
 app.get('/characteristics/:characteristic', routes.getCharacteristics);
+
+app.get('/defining-char', routes.getDefiningChar);
+
+app.get('/happy/:type/:d/:e/:l/:s/:v', routes.getHappy);
 
 app.get('/getall', routes.getAll);
 

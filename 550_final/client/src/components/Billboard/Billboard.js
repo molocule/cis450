@@ -55,7 +55,8 @@ export default class Billboard extends React.Component {
 		  if (!playlistList) return;
       const PopSongsRows = playlistList.map((songObject, i) =>
         <FreqSongsRow
-          name={songObject.n} 
+          name={songObject.name} 
+          playlist_appearances={songObject.n} 
         /> 
       
 		);
@@ -88,11 +89,24 @@ export default class Billboard extends React.Component {
             </div>
           </div>
         </div>
+        <br />
+        <div className="container movies-container">
+          <div className="jumbotron">
+            <div className="songs-container">
+              <div className="songs-header">
+                <div className="header-lg"><strong>Song Name</strong></div>
+                <div className="header"><strong>Number of Followers</strong></div>
+              </div>
+              <div className="results-container" id="results">
+              {this.state.popPlaylists}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   };
 };
-
 
 
   /*
