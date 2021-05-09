@@ -10,6 +10,7 @@ import Home from './Home/Home'
 import Songs from './Songs/Songs'
 import Playlists from './Playlists/Playlists'
 import Characteristics from './Characteristics/Characteristics'
+import Recommendation from './Recommendation/Recommendation'
 export default class App extends React.Component {
 
 	render() {
@@ -46,6 +47,11 @@ export default class App extends React.Component {
 							exact
 							path="/Popular Characteristics"
 							render={() => <Characteristics/>}
+						/>
+						<Route
+							exact
+							path="/Recommendation"
+							render={() => <Recommendation />}
 						/>
 					</Switch>
 				</Router>
