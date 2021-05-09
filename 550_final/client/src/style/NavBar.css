@@ -1,0 +1,34 @@
+.keywords-container {
+  /* margin: 10px 0; */
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  /* border-bottom: 1px solid #ddd; */
+}
+
+.keywords-container .keyword {
+  flex: 1 0 20%;
+  margin: 5px 0;
+  padding: 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.keywords-container .keyword:hover {
+  background-color: #ddd;
+}
+
+.songs-container .songs-header, .results-container .song {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  height: 40px;
+}
+
+.song .name, .songs-header .header-lg {
+  flex: 1 0 50%;
+}
+
+.songs-header .header, .song .artists, .song .year {
+  flex: 1 0 30%;
+} 
