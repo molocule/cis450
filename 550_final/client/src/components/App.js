@@ -21,7 +21,7 @@ export default class App extends React.Component {
 						<Route
 							exact
 							path="/"
-							render={() => <Home />}
+							render={() => <Billboard />}
 						/>
 						<Route
 							exact

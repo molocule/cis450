@@ -92,7 +92,7 @@ export default class Artists extends React.Component {
 		}).then(charList => {
 		if (!charList) return;
     console.log(charList)
-		const charRows = charList.map((charObject, i) =>
+		var charRows = charList.map((charObject, i) =>
 			<CharRow
         name={charObject.name}
         level={charObject.acousticness_percentile}
@@ -101,6 +101,10 @@ export default class Artists extends React.Component {
 		);
     console.log(charRows)
 
+    console.log(charRows.length);
+    if(charRows.length == 0) {
+      charRows = <p> No Results Found</p>
+    }
 		// Set the state of the keywords list to the value returned by the HTTP response from the server.
 		this.setState({
 			artistSongs: charRows
@@ -132,6 +136,7 @@ export default class Artists extends React.Component {
           rank={charObject.Spotify_Rank} 
         /> 
       );
+
 
       // Set the state of the keywords list to the value returned by the HTTP response from the server.
       this.setState({
