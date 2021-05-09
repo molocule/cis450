@@ -52,11 +52,6 @@ export default class Songs extends React.Component {
         [ 'Energy', 0], 
         [ 'Instrumentalness', 0], 
         [ 'Valence', 0],
-        [ 'Popularity', 0],
-        [ 'Tempo', 0],
-        [ 'Liveness', 0],
-        [ 'Loudness', 0],
-        [ 'Speechiness', 0],
       ],
     };
     this.handleChange = this.handleChange.bind(this);
@@ -132,12 +127,7 @@ export default class Songs extends React.Component {
         [ 'Danceability', charObject.danceability], 
         [ 'Energy', charObject.energy], 
         [ 'Instrumentalness', charObject.instrumentalness], 
-        [ 'Valence', charObject.valence],
-        [ 'Popularity', charObject.popularity],
-        [ 'Tempo', charObject.tempo],
-        [ 'Liveness', charObject.liveness],
-        [ 'Loudness', charObject.loudness],
-        [ 'Speechiness', charObject.speechiness],
+        [ 'Valence', charObject.valence]
       ]
 		);
 
@@ -201,6 +191,7 @@ export default class Songs extends React.Component {
         <PageNavbar active="dashboard" />
         <br />
         <div className="container movies-container">
+        <div className="table-title"><strong>Fill In</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
             <form>
@@ -209,7 +200,9 @@ export default class Songs extends React.Component {
                 <input type="text" value={this.state.artist} onChange={this.handleChange} />
               </label>
             </form>
+            <br></br>
             <button id="submitMovieBtn" className="submit-btn" onClick={this.getSong}> Submit </button>
+            <br></br>
               <div className="songs-header">
               </div>
               <div className="results-container" id="results">
@@ -217,7 +210,7 @@ export default class Songs extends React.Component {
               </div>
             </div>
             <Chart
-              width={800}
+              width={1000}
               height={300}
               chartType="ColumnChart"
               loader={<div>Loading Chart</div>}
@@ -239,6 +232,7 @@ export default class Songs extends React.Component {
         </div>
         <br />
         <div className="container movies-container">
+        <div className="table-title"><strong>Fill In</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
               <div style={{flex: 1, flexDirection: "row"}}>
@@ -247,7 +241,8 @@ export default class Songs extends React.Component {
                     onChange={this.onChange}
                     value={this.state.text}
                 />
-                <h3> D </h3>
+                <br></br>
+                <h5> Danceability </h5>
                 <Slider
                   value={this.state.user_input_d}
                   orientation="horizontal"
@@ -256,7 +251,7 @@ export default class Songs extends React.Component {
                   max={1}
                   step={0.02}
                 />
-                <h3> E </h3>
+                <h5> Energy </h5>
                 <Slider
                   value={this.state.user_input_e}
                   orientation="horizontal"
@@ -265,7 +260,7 @@ export default class Songs extends React.Component {
                   max={1}
                   step={0.02}
                 />
-                <h3> L </h3>
+                <h5> Liveness </h5>
                 <Slider
                   value={this.state.user_input_l}
                   orientation="horizontal"
@@ -274,7 +269,7 @@ export default class Songs extends React.Component {
                   max={1}
                   step={0.02}
                 />
-                <h3> S </h3>
+                <h5> Speechiness </h5>
                 <Slider
                   value={this.state.user_input_s}
                   orientation="horizontal"
@@ -283,7 +278,7 @@ export default class Songs extends React.Component {
                   max={1}
                   step={0.02}
                 />
-                <h3> V </h3>
+                <h5> Valence </h5>
                 <Slider
                   value={this.state.user_input_v}
                   orientation="horizontal"
@@ -293,7 +288,10 @@ export default class Songs extends React.Component {
                   step={0.02}
                 />
             </div>
+            <br></br>
             <button id="submitMovieBtn" className="submit-btn" onClick={this.getHappy}> Get Songs!</button>
+            <br></br>
+            <br></br>
             <div className="songs-header">
                 <div className="header-lg"><strong>Artist Name</strong></div>
                 <div className="header"><strong>Song Name</strong></div>

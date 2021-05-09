@@ -77,6 +77,7 @@ export default class Billboard extends React.Component {
         <PageNavbar active="dashboard" />
         <br />
         <div className="container movies-container">
+        <div className="table-title"><strong>See spotify songs ranked by how many playlists they belong to!</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
               <div className="songs-header">
@@ -91,6 +92,7 @@ export default class Billboard extends React.Component {
         </div>
         <br />
         <div className="container movies-container">
+        <div className="table-title"><strong>See spotify songs ranked by the number of followers the playlists that they belong to have!</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
               <div className="songs-header">

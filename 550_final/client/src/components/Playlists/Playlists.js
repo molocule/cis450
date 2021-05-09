@@ -74,6 +74,7 @@ export default class Playlists extends React.Component {
         <PageNavbar active="dashboard" />
         <br />
         <div className="container movies-container">
+        <div className="table-title"><strong>Fill In</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
               <Select
@@ -81,7 +82,9 @@ export default class Playlists extends React.Component {
                 onChange={this.onChange}
                 value={this.state.text}
               /> 
+              <br></br>
               <button id="submitMovieBtn" className="submit-btn" onClick={this.getCharacteristics}> Get Characteristics</button>
+              <br></br>
               <div className="songs-header">
                 <div className="header-lg"><strong>Percentile Rank</strong></div>
                 <div className="header"><strong>Number of Followers</strong></div>

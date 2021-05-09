@@ -47,6 +47,7 @@ export default class Characteristics extends React.Component {
         <PageNavbar active="dashboard" />
         <br />
         <div className="container movies-container">
+        <div className="table-title"><strong>Fill In</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
               <div className="songs-header">

@@ -149,6 +149,7 @@ export default class Artists extends React.Component {
         <PageNavbar active="dashboard" />
         <br />
         <div className="container movies-container">
+        <div className="table-title"><strong>See spotify artists ranked by the number of grammys they’ve won!</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
               <div className="songs-header">
@@ -163,6 +164,7 @@ export default class Artists extends React.Component {
         </div>
         <br />
         <div className="container movies-container">
+        <div className="table-title"><strong>Enter a characteristic value and then we will show you the artist with most diverse discography<br></br>for that characteristic ranked by their spotify ranking!</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
             <Select
@@ -170,7 +172,10 @@ export default class Artists extends React.Component {
               onChange={this.onChange}
               value={this.state.text}
             /> 
+            <br></br>
             <button id="submitMovieBtn" className="submit-btn" onClick={this.getCharacteristics}> Get Characteristics</button>
+            <br></br>
+            <br></br>
               <div className="songs-header">
                 <div className="header-lg"><strong>Artist Name</strong></div>
                 <div className="header"><strong>{this.state.submitted}</strong></div>
@@ -184,16 +189,19 @@ export default class Artists extends React.Component {
         </div>
         <br />
         <div className="container movies-container">
+        <div className="table-title"><strong>Fill In</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
             <form>
               <label>
-                Name:
+                Name: 
                 <input type="text" value={this.state.artist} onChange={this.handleChange} />
               </label>
             </form>
+            <br></br>
             <button id="submitMovieBtn" className="submit-btn" onClick={this.getArtists}> Submit</button>
-
+            <br></br>
+            <br></br>
               <div className="songs-header">
                 <div className="header-lg"><strong>Song Name</strong></div>
               </div>

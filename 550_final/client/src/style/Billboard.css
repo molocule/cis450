@@ -1,34 +1,85 @@
+@keyframes bgcolor {
+  0% {
+      background-color: #158c2b
+  }
+
+  30% {
+      background-color: #66bf39
+  }
+
+  60% {
+      background-color: #64a371
+  }
+
+  90% {
+      background-color: #3a5938
+  }
+
+  100% {
+      background-color: #09610d
+  }
+}
+
+body {
+  -webkit-animation: bgcolor 20s infinite;
+  animation: bgcolor 10s infinite;
+  -webkit-animation-direction: alternate;
+  animation-direction: alternate;
+  font-family: Arial;
+  padding: 10px;
+}
+
+/* Header/Blog Title */
+.table-title {
+padding: 30px;
+text-align: center;
+background: #191414;
+color: #1DB954
+}
+
 .keywords-container {
-  /* margin: 10px 0; */
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  /* border-bottom: 1px solid #ddd; */
+/* margin: 10px 0; */
+display: flex;
+flex-flow: row wrap;
+justify-content: flex-start;
+/* border-bottom: 1px solid #ddd; */
 }
 
 .keywords-container .keyword {
-  flex: 1 0 20%;
-  margin: 5px 0;
-  padding: 10px;
-  cursor: pointer;
-  box-sizing: border-box;
+flex: 1 0 20%;
+margin: 5px 0;
+padding: 10px;
+cursor: pointer;
+box-sizing: border-box;
 }
 
 .keywords-container .keyword:hover {
-  background-color: #ddd;
+background-color: #ddd;
+opacity: 0.85
 }
 
 .songs-container .songs-header, .results-container .song {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  height: 40px;
+display: flex;
+flex-flow: row nowrap;
+align-items: center;
+height: 40px;
 }
 
 .song .name, .songs-header .header-lg {
-  flex: 1 0 50%;
+flex: 1 0 50%;
 }
 
 .songs-header .header, .song .artists, .song .year {
-  flex: 1 0 30%;
+flex: 1 0 30%;
 } 
+
+.submit-btn {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
