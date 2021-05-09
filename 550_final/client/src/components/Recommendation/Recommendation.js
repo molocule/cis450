@@ -83,8 +83,8 @@ export default class Recommendation extends React.Component {
       num={songObject.num}
     />
     );
-    if(charRows.length == 0) {
-      charRows = <p> No Results Found</p>
+    if(CharRows.length == 0) {
+      CharRows = <p> No Results Found</p>
     }
 
 		// Set the state of the keywords list to the value returned by the HTTP response from the server.
