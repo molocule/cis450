@@ -44,7 +44,7 @@ export default class Playlists extends React.Component {
     //(PID, percentile_rank, num_followers)
     const PopPlayRows = charList.map((songObject, i) =>
     <PopPlaylistRow
-      playlist_appearances={songObject.PID} 
+      playlist_appearances={songObject.num_followers} 
       name={songObject.percentile_rank} 
     />
     );

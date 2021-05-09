@@ -94,9 +94,12 @@ export default class Artists extends React.Component {
     console.log(charList)
 		const charRows = charList.map((charObject, i) =>
 			<CharRow
-        name={charObject.name} 
+        name={charObject.name}
+        level={charObject.acousticness_percentile}
+        rank={charObject.danceability_percentile}
 			/> 
 		);
+    console.log(charRows)
 
 		// Set the state of the keywords list to the value returned by the HTTP response from the server.
 		this.setState({
@@ -189,7 +192,7 @@ export default class Artists extends React.Component {
         </div>
         <br />
         <div className="container movies-container">
-        <div className="table-title"><strong>Enter an artist name to view which percentile of each characteristic each song <br></br>belongs to, ordered by the spotify ranking of that song!</strong></div>
+        <div className="table-title"><strong>Enter an artist name to view which percentile of acousticness and danceability each song <br></br>belongs to, ordered by the spotify ranking of that song!</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
             <form>
@@ -204,6 +207,8 @@ export default class Artists extends React.Component {
             <br></br>
               <div className="songs-header">
                 <div className="header-lg"><strong>Song Name</strong></div>
+                <div className="header"><strong>Acousticness</strong></div>
+                <div className="header"><strong>Danceability</strong></div>
               </div>
               <div className="results-container" id="results">
               {this.state.artistSongs}

@@ -90,9 +90,33 @@ const getSongCharacterstics = (req, res) => {
 const getArtistCharacteristics= (req, res) => {
   var keyword = req.params.singer;
   const query = `
+WITH countall as (
+  SELECT COUNT(*) as c FROM Characteristics 
+), 
+percentile_rank_char as (
+  SELECT
+      SID,
+      ROUND(
+         PERCENT_RANK() OVER (
+            ORDER BY acousticness
+         )
+      ,2) * 100 as acousticness_percentile, 
+      ROUND(
+         PERCENT_RANK() OVER (
+            ORDER BY danceability
+         )
+      ,2) * 100 danceability_percentile
+      FROM Characteristics
+), 
+artChar as (
   SELECT * 
-  FROM Song S JOIN Characteristics C ON S.SID = C.SID	
-  WHERE S.artist = "['${keyword}']"  
+  FROM Song S NATURAL JOIN percentile_rank_char C 
+  WHERE S.artist LIKE  "['${keyword}']" 
+)
+SELECT artChar.* from artChar JOIN Spotify_Ranking
+ON artChar.SID = Spotify_Ranking.SID
+GROUP BY SID
+ORDER BY SUM(Spotify_Ranking.week) / AVG(Spotify_Ranking.rank) DESC
   `
   console.log(query)
   connection.query(query, (err, rows, fields) => {
@@ -122,7 +146,7 @@ const getPlaylistCharacteristic= (req, res) => {
   FROM playAgg JOIN Playlists
   ON playAgg.PID = Playlists.PID
   ORDER BY Playlists.num_followers DESC
-  LIMIT 10;
+  LIMIT 10
   `
 
   connection.query(query, (err, rows, fields) => {
