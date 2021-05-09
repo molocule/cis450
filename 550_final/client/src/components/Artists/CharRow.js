@@ -7,7 +7,6 @@ export default class FreqSongsRow extends React.Component {
 				<div className="name"> {this.props.name}</div>
 				<div className="artists"> {this.props.level}</div>
 				<div className="year"> {this.props.rank}</div>
-				<div className="year"> {this.props.hi}</div>
 			</div>
 		);
 	};

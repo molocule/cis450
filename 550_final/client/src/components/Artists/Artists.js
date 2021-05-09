@@ -95,8 +95,8 @@ export default class Artists extends React.Component {
 		var charRows = charList.map((charObject, i) =>
 			<CharRow
         name={charObject.name}
-        level={charObject.acousticness_percentile}
-        rank={charObject.danceability_percentile}
+        level={charObject.acousticness}
+        rank={charObject.danceability}
 			/> 
 		);
     console.log(charRows)
