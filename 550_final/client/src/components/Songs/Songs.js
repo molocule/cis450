@@ -240,8 +240,8 @@ export default class Songs extends React.Component {
         <div className="container movies-container">
         <div className="table-title"><strong>It’s your turn to mix!<br></br>Drag the sliders around to create a certain mood and we’ll return to you the songs that have the highest score for the mood you create</strong></div>
           <div className="jumbotron">
-            <div className="songs-container">
-              <div style={{flex: 1, flexDirection: "row"}}>
+          <div className="songs-container">
+
                 <Select
                     options={options}
                     onChange={this.onChange}
@@ -293,12 +293,11 @@ export default class Songs extends React.Component {
                   max={1}
                   step={0.02}
                 />
-            </div>
             <br></br>
             <button id="submitMovieBtn" className="submit-btn" onClick={this.getHappy}> Get Songs!</button>
             <br></br>
             <br></br>
-            <div className="songs-header">
+              <div className="songs-header">
                 <div className="header-lg"><strong>Artist Name</strong></div>
                 <div className="header"><strong>Song Name</strong></div>
               </div>
