@@ -50,7 +50,6 @@ export default class Songs extends React.Component {
         [ 'Acousticness', 0], 
         [ 'Danceability', 0], 
         [ 'Energy', 0], 
-        [ 'Instrumentalness', 0], 
         [ 'Valence', 0],
       ],
     };
@@ -125,8 +124,7 @@ export default class Songs extends React.Component {
         [ 'Characteristics', 'Measure'], 
         [ 'Acousticness', charObject.acousticness], 
         [ 'Danceability', charObject.danceability], 
-        [ 'Energy', charObject.energy], 
-        [ 'Instrumentalness', charObject.instrumentalness], 
+        [ 'Energy', charObject.energy],
         [ 'Valence', charObject.valence]
       ]
 		);
@@ -191,7 +189,7 @@ export default class Songs extends React.Component {
         <PageNavbar active="dashboard" />
         <br />
         <div className="container movies-container">
-        <div className="table-title"><strong>Fill In</strong></div>
+        <div className="table-title"><strong>Enter a song name to view all characteristics of a specific song!</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
             <form>
@@ -232,7 +230,7 @@ export default class Songs extends React.Component {
         </div>
         <br />
         <div className="container movies-container">
-        <div className="table-title"><strong>Fill In</strong></div>
+        <div className="table-title"><strong>It’s your turn to mix!<br></br>Drag the sliders around to create a certain mood and we’ll return to you the songs that have the highest score for the mood you create</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
               <div style={{flex: 1, flexDirection: "row"}}>

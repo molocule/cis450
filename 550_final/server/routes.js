@@ -266,15 +266,15 @@ const getCharacteristics= (req, res) => {
       FROM playlistCharacteristics NATURAL JOIN averageChars 
   ),
   checkSimilar as (
-    SELECT PID, (acousticness > AVG(acousticness) - 0.1 AND acousticness < AVG(acousticness) + 0.1) as b_a,
-          (danceability > AVG(danceability) - 0.1 AND danceability < AVG(danceability) + 0.1) as b_d,
-                  (energy > AVG(energy) - 0.1 AND energy < AVG(energy) + 0.1) as b_e,
-                  (instrumentalness > AVG(instrumentalness) - 0.1 AND instrumentalness < AVG(instrumentalness) + 0.1) as b_i,
-                  (valence > AVG(valence) - 0.1 AND valence < AVG(valence) + 0.1) as b_v,
-                  (tempo > AVG(tempo) - 10 AND tempo < AVG(tempo) + 10) as b_t,
-                  (liveness > AVG(liveness) - 0.1 AND liveness < AVG(liveness) + 0.1) as b_li,
-                  (loudness > AVG(loudness) - 5 AND loudness < AVG(loudness) + 5) as b_lo,
-                  (speechiness > AVG(speechiness) - 0.1 AND speechiness < AVG(speechiness) + 0.1) as b_s
+    SELECT PID, (acousticness > 'AVG(acousticness)' - 0.1 AND acousticness < 'AVG(acousticness)' + 0.1) as b_a,
+          (danceability > 'AVG(danceability)' - 0.1 AND danceability < 'AVG(danceability)' + 0.1) as b_d,
+                  (energy > 'AVG(energy)' - 0.1 AND energy < 'AVG(energy)' + 0.1) as b_e,
+                  (instrumentalness > 'AVG(instrumentalness)' - 0.1 AND instrumentalness < 'AVG(instrumentalness)' + 0.1) as b_i,
+                  (valence > 'AVG(valence)' - 0.1 AND valence < 'AVG(valence)' + 0.1) as b_v,
+                  (tempo > 'AVG(tempo)' - 10 AND tempo < 'AVG(tempo)' + 10) as b_t,
+                  (liveness > 'AVG(liveness)' - 0.1 AND liveness < 'AVG(liveness)' + 0.1) as b_li,
+                  (loudness > 'AVG(loudness)' - 5 AND loudness < 'AVG(loudness)' + 5) as b_lo,
+                  (speechiness > 'AVG(speechiness)' - 0.1 AND speechiness < 'AVG(speechiness)' + 0.1) as b_s
     FROM joinedTable
   ),
   similarAggreg as (
@@ -309,6 +309,7 @@ const getCharacteristics= (req, res) => {
   FROM dc 
   GROUP BY defining_char
   ORDER BY c DESC
+  
     `
   
     connection.query(query, (err, rows, fields) => {

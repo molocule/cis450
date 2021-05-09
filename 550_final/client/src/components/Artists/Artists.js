@@ -189,7 +189,7 @@ export default class Artists extends React.Component {
         </div>
         <br />
         <div className="container movies-container">
-        <div className="table-title"><strong>Fill In</strong></div>
+        <div className="table-title"><strong>Enter an artist name to view which percentile of each characteristic each song <br></br>belongs to, ordered by the spotify ranking of that song!</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
             <form>

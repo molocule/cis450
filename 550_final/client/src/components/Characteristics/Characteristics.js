@@ -29,6 +29,7 @@ export default class Characteristics extends React.Component {
 		  if (!songList) return;
       const FreqSongsRows = songList.map((songObject, i) =>
       <FreqSongsRow
+        name={songObject.defining_char}
         playlist_appearances={songObject.c} 
       />
 		);
@@ -47,12 +48,12 @@ export default class Characteristics extends React.Component {
         <PageNavbar active="dashboard" />
         <br />
         <div className="container movies-container">
-        <div className="table-title"><strong>Fill In</strong></div>
+        <div className="table-title"><strong>We will show you which characteristic is the most defining characteristic of each playlist<br></br>and then display how many playlists have a characteristic as its defining characteristic.</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
               <div className="songs-header">
-                <div className="header-lg"><strong>Song Name</strong></div>
-                <div className="header"><strong>Number of Playlist Appearances</strong></div>
+                <div className="header-lg"><strong>Characteristic</strong></div>
+                <div className="header"><strong>Number of Playlists</strong></div>
               </div>
               <div className="results-container" id="results">
                 {this.state.freqSongs}
