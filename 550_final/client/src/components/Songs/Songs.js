@@ -119,7 +119,7 @@ export default class Songs extends React.Component {
 		}).then(charList => {
 		if (!charList) return;
     console.log(charList)
-		const charRows = charList.map((charObject, i) =>
+		var charRows = charList.map((charObject, i) =>
       [ 
         [ 'Characteristics', 'Measure'], 
         [ 'Acousticness', charObject.acousticness], 
@@ -128,6 +128,10 @@ export default class Songs extends React.Component {
         [ 'Valence', charObject.valence]
       ]
 		);
+
+    if(charRows.length == 0) {
+      charRows = <p> No Results Found</p>
+    }
 
     const data = [
       ['City', '2010 Population'],
@@ -163,12 +167,16 @@ export default class Songs extends React.Component {
       }).then(charList => {
       if (!charList) return;
       console.log(charList)
-      const charRows = charList.map((charObject, i) =>
+      var charRows = charList.map((charObject, i) =>
         <CharRow
           artists={charObject.artist.replace(/[\[\]']+/g,'')} 
           name={charObject.name} 
         /> 
       );
+
+      if(charRows.length == 0) {
+        charRows = <p> No Results Found</p>
+      }
 
       // Set the state of the keywords list to the value returned by the HTTP response from the server.
       this.setState({

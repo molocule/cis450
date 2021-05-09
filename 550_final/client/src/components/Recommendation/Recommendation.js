@@ -76,13 +76,16 @@ export default class Recommendation extends React.Component {
 		}).then(charList => {
 		if (!charList) return;
     console.log(charList)
-		const CharRows = charList.map((songObject, i) =>
+		var CharRows = charList.map((songObject, i) =>
     <CharRow
       artists={songObject.artist.replace(/[\[\]']+/g,'')} 
       name={songObject.name} 
       num={songObject.num}
     />
     );
+    if(charRows.length == 0) {
+      charRows = <p> No Results Found</p>
+    }
 
 		// Set the state of the keywords list to the value returned by the HTTP response from the server.
 		this.setState({

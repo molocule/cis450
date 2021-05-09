@@ -129,13 +129,16 @@ export default class Artists extends React.Component {
       }).then(charList => {
       if (!charList) return;
       console.log(charList)
-      const charRows = charList.map((charObject, i) =>
+      var charRows = charList.map((charObject, i) =>
         <CharRow
           name={charObject.artist.replace(/[\[\]']+/g,'')} 
           level={charObject.Characteristic_Value} 
           rank={charObject.Spotify_Rank} 
         /> 
       );
+      if(charRows.length == 0) {
+        charRows = <p> No Results Found</p>
+      }
 
 
       // Set the state of the keywords list to the value returned by the HTTP response from the server.
