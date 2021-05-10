@@ -22,8 +22,6 @@ app.get('/artist/:singer', routes.getArtistCharacteristics);
 
 app.get('/playlist-rank/:characteristic', routes.getPlaylistCharacteristic);
 
-app.get('/keywords', routes.getFrequentRelatedSongs);
-
 app.get('/playlist/:PID', routes.getPIDSongs);
 
 app.get('/characteristics/:characteristic', routes.getCharacteristics);
@@ -36,7 +34,6 @@ app.get('/song-rec/:song', routes.getRecs);
 
 app.get('/acoustic/:acoustic', routes.getHigherAcoustic);
 
-app.get('/getall', routes.getAll);
 
 
 app.listen(8081, () => {

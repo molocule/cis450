@@ -44,7 +44,6 @@ const getFrequentSongsInPlaylist = (req, res) => {
   });
 }
 
-
 const getSongsPlaylistsMostFollowers= (req, res) => {
   const query = `
   WITH playlist_with_songs as (
@@ -70,7 +69,6 @@ const getSongsPlaylistsMostFollowers= (req, res) => {
   });
 };
 
-
 const getSongCharacterstics = (req, res) => {
   var keyword = req.params.song;
   const query = `
@@ -84,8 +82,6 @@ const getSongCharacterstics = (req, res) => {
     else res.json(rows);
   });
 };
-
-
 
 const getArtistCharacteristics= (req, res) => {
   var keyword = req.params.singer;
@@ -155,48 +151,6 @@ const getPlaylistCharacteristic= (req, res) => {
   });
 };
 
-const getFrequentRelatedSongs = (req, res) => {
-  var keyword = req.params.song;
-  const query = `
-  WITH playlistOfSong as (
-    SELECT Playlist.PID, Playlist.SID
-    FROM Playlist 
-    WHERE Playlist.PID IN (
-        SELECT PID FROM Playlist WHERE SID = (
-            SELECT SID FROM Song WHERE name = '${keyword}'
-          )
-      ) 
-    AND SID != (
-      SELECT SID FROM Song WHERE name = '${keyword}'
-    )
-  ), 
-  songCounts as (
-    SELECT SID, COUNT(*) as num
-    FROM playlistOfSong
-    GROUP BY SID
-  )
-  SELECT Song.name, Song.artist, songCounts.num
-  FROM songCounts JOIN Song 
-  ON songCounts.SID = Song.SID
-  ORDER BY songCounts.num DESC;  
-  `
-
-  connection.query(query, (err, rows, fields) => {
-    if (err) console.log(err);
-    else res.json(rows);
-  });
-};
-
-
-
-const getAll = (req, res) => {
-  const query = 'SELECT * FROM Song LIMIT 10'
-
-  connection.query(query, (err, rows, fields) => {
-    if (err) console.log(err);
-    else res.json(rows);
-  });
-};
 
 const getPIDSongs= (req, res) => {
   var keyword = req.params.PID;
@@ -213,8 +167,6 @@ const getPIDSongs= (req, res) => {
     else res.json(rows);
   });
 };
-
-
 
 // Complex Queries
 const getCharacteristics= (req, res) => {
@@ -272,7 +224,6 @@ const getCharacteristics= (req, res) => {
     else res.json(rows);
   });
 };
-
 
 const getDefiningChar = (req, res) => {
   const query = `
@@ -341,9 +292,6 @@ ORDER BY c DESC
     else res.json(rows);
   });
 };
-  
-
-  
 
 const getHappy = (req, res) => {
   var type = req.params.type;
@@ -384,8 +332,6 @@ const getHappy = (req, res) => {
   });
 };
   
-
-
 const getRecs = (req, res) => {
   var song = req.params.song;
   console.log(song)
@@ -464,14 +410,12 @@ const getHigherAcoustic = (req, res) => {
 // (num_grammys, artists)
 
 module.exports = {
-  getAll: getAll,
   getHighestGrammyArtists: getHighestGrammyArtists,
   getFrequentSongsInPlaylist: getFrequentSongsInPlaylist,
   getSongsPlaylistsMostFollowers: getSongsPlaylistsMostFollowers,
   getSongCharacterstics: getSongCharacterstics,
   getArtistCharacteristics: getArtistCharacteristics,
   getPlaylistCharacteristic: getPlaylistCharacteristic,
-  getFrequentRelatedSongs: getFrequentRelatedSongs,
   getPIDSongs: getPIDSongs,
   getCharacteristics: getCharacteristics,
   getDefiningChar: getDefiningChar,
