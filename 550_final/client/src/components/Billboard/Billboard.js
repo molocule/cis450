@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../style/Billboard.css';
 import PageNavbar from '../PageNavbar';
-import FreqSongsRow from './FreqSongsRow';
+import SongsRow from './SongsRow';
 
 export default class Billboard extends React.Component {
   constructor(props) {
@@ -14,7 +14,12 @@ export default class Billboard extends React.Component {
   };
 
   componentDidMount() {
-        // Send an HTTP request to the server.
+
+    /* Simple Query: 2. Display spotify songs ranked by how many playlists they belong to
+    /
+    /
+    */  
+    // Send an HTTP request to the server.
 		fetch("http://localhost:8081/freq-songs",
 		{
 		  method: 'GET' // The type of HTTP request.
@@ -25,21 +30,25 @@ export default class Billboard extends React.Component {
 		  // Print the error if there is one.
 		  console.log(err);
 		}).then(songList => {
-      console.log(songList)
 		  if (!songList) return;
-      const FreqSongsRows = songList.map((songObject, i) =>
-      <FreqSongsRow
+      const PlaylistRows = songList.map((songObject, i) =>
+      <SongsRow
         playlist_appearances={songObject.playlist_appearances} 
         name={songObject.name} 
       />
 		);
     this.setState({
-        freqSongs: FreqSongsRows
+        popPlaylists: PlaylistRows
     });
 		}, err => {
 		  console.log(err);
 		});
 
+
+    /* Simple Query: 3. Display songs in playlist ranked by most followers
+    /
+    /
+    */  
     // Send an HTTP request to the server.
 		fetch("http://localhost:8081/most-followers",
 		{
@@ -50,11 +59,10 @@ export default class Billboard extends React.Component {
 		}, err => {
 		  // Print the error if there is one.
 		  console.log(err);
-		}).then(playlistList => {
-      console.log(playlistList)
-		  if (!playlistList) return;
-      const PopSongsRows = playlistList.map((songObject, i) =>
-        <FreqSongsRow
+		}).then(songList => {
+		  if (!songList) return;
+      const PopSongsRows = songList.map((songObject, i) =>
+        <SongsRow
           name={songObject.name} 
           playlist_appearances={songObject.n} 
         /> 
@@ -62,7 +70,7 @@ export default class Billboard extends React.Component {
 		);
 
     this.setState({
-        popPlaylists: PopSongsRows
+        freqSongs: PopSongsRows
     });
 
 		}, err => {
@@ -85,7 +93,7 @@ export default class Billboard extends React.Component {
                 <div className="header"><strong>Number of Playlist Appearances</strong></div>
               </div>
               <div className="results-container" id="results">
-                {this.state.freqSongs}
+              {this.state.popPlaylists}
               </div>
             </div>
           </div>
@@ -100,7 +108,7 @@ export default class Billboard extends React.Component {
                 <div className="header"><strong>Number of Followers</strong></div>
               </div>
               <div className="results-container" id="results">
-              {this.state.popPlaylists}
+              {this.state.freqSongs}
               </div>
             </div>
           </div>
@@ -109,37 +117,3 @@ export default class Billboard extends React.Component {
     );
   };
 };
-
-
-  /*
-	submitCategory() {
-		// Send an HTTP request to the server.
-		fetch("http://localhost:8081/getall",
-		{
-		  method: 'GET' // The type of HTTP request.
-		}).then(res => {
-		  // Convert the response data to a JSON.
-		  return res.json();
-		}, err => {
-		  // Print the error if there is one.
-		  console.log(err);
-		}).then(songList => {
-		  if (!songList) return;
-      const BillboardRankingRows = songList.map((songObject, i) =>
-			<BillboardRankingRow
-        year={songObject.year} 
-        artists={songObject.artist.replace(/[\[\]']+/g,'')} 
-        name={songObject.name}
-			/> 
-      
-		);
-
-    this.setState({
-      songs: BillboardRankingRows
-    });
-
-		}, err => {
-		  console.log(err);
-		});
-	};
-  */

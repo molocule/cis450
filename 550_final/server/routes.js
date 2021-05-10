@@ -5,6 +5,7 @@ config.connectionLimit = 10;
 const connection = mysql.createPool(config);
 
 // Simple Queries
+
 const getHighestGrammyArtists = (req, res) => {
   const query = `
   SELECT COUNT(S.artist) as num_grammys, S.artist
@@ -68,7 +69,6 @@ const getSongsPlaylistsMostFollowers= (req, res) => {
     else res.json(rows);
   });
 };
-
 
 
 const getSongCharacterstics = (req, res) => {
@@ -274,169 +274,191 @@ const getCharacteristics= (req, res) => {
 };
 
 
-  const getDefiningChar = (req, res) => {
-    const query = `
-    WITH playlistCharacteristics as (
-      SELECT *
-      FROM Playlist NATURAL JOIN Characteristics
-  ),
-  averageChars as (
-      SELECT PID, AVG(acousticness), AVG(danceability), AVG(energy), AVG(instrumentalness), AVG(valence), AVG(tempo), AVG(liveness), AVG(loudness), AVG(speechiness)
-      FROM playlistCharacteristics
-      GROUP BY PID
-  ),
-  joinedTable as (
+const getDefiningChar = (req, res) => {
+  const query = `
+  WITH playlistCharacteristics as (
     SELECT *
-      FROM playlistCharacteristics NATURAL JOIN averageChars 
-  ),
-  checkSimilar as (
-    SELECT PID, (acousticness > 'AVG(acousticness)' - 0.1 AND acousticness < 'AVG(acousticness)' + 0.1) as b_a,
-          (danceability > 'AVG(danceability)' - 0.1 AND danceability < 'AVG(danceability)' + 0.1) as b_d,
-                  (energy > 'AVG(energy)' - 0.1 AND energy < 'AVG(energy)' + 0.1) as b_e,
-                  (instrumentalness > 'AVG(instrumentalness)' - 0.1 AND instrumentalness < 'AVG(instrumentalness)' + 0.1) as b_i,
-                  (valence > 'AVG(valence)' - 0.1 AND valence < 'AVG(valence)' + 0.1) as b_v,
-                  (tempo > 'AVG(tempo)' - 10 AND tempo < 'AVG(tempo)' + 10) as b_t,
-                  (liveness > 'AVG(liveness)' - 0.1 AND liveness < 'AVG(liveness)' + 0.1) as b_li,
-                  (loudness > 'AVG(loudness)' - 5 AND loudness < 'AVG(loudness)' + 5) as b_lo,
-                  (speechiness > 'AVG(speechiness)' - 0.1 AND speechiness < 'AVG(speechiness)' + 0.1) as b_s
-    FROM joinedTable
-  ),
-  similarAggreg as (
-    SELECT PID, SUM(b_a) as n_a, SUM(b_d) as n_d, SUM(b_e) as n_e,  SUM(b_i) as n_i,  SUM(b_v) as n_v,  SUM(b_t) as n_t,  SUM(b_li) as n_li,  SUM(b_lo) as n_lo,  SUM(b_s) as n_s 
-    FROM checkSimilar
+    FROM Playlist NATURAL JOIN Characteristics
+),
+averageChars as (
+    SELECT PID, AVG(acousticness), AVG(danceability), AVG(energy), AVG(instrumentalness), AVG(valence), AVG(tempo), AVG(liveness), AVG(loudness), AVG(speechiness)
+    FROM playlistCharacteristics
     GROUP BY PID
-  ), 
-  dc as (
-      SELECT PID,
-      CASE
-          WHEN n_a > n_d AND n_a > n_e AND n_a > n_i AND n_a > n_v AND n_a > n_t AND n_a > n_li AND n_a > n_lo AND n_a > n_s
-              THEN 'acousticness'
-          WHEN n_d > n_e AND n_d > n_i AND n_d > n_v AND n_d > n_t AND n_d > n_li AND n_d > n_lo AND n_d > n_s
-              THEN 'danceability'
-          WHEN n_e > n_i AND n_e > n_v AND n_e > n_t AND n_e > n_li AND n_e > n_lo AND n_e > n_s
-              THEN 'energy'
-          WHEN n_i > n_v AND n_i > n_t AND n_i > n_li AND n_i > n_lo AND n_i > n_s
-              THEN 'instrumentalness'
-          WHEN n_v > n_t AND n_v > n_li AND n_v > n_lo AND n_v > n_s
-              THEN 'valence'
-          WHEN n_t > n_li AND n_t > n_lo AND n_t > n_s
-              THEN 'tempo'
-          WHEN n_li > n_lo AND n_li > n_s
-              THEN 'liveness'
-          WHEN n_lo > n_s
-              THEN 'loudness'
-          ELSE 'speechiness' 
-      END as defining_char
-      FROM similarAggreg
-  )
-  SELECT defining_char, count(*) as c
-  FROM dc 
-  GROUP BY defining_char
-  ORDER BY c DESC
-  
-    `
-  
-    connection.query(query, (err, rows, fields) => {
-      if (err) console.log(err);
-      else res.json(rows);
-    });
-  };
+),
+joinedTable as (
+  SELECT *
+    FROM playlistCharacteristics NATURAL JOIN averageChars 
+),
+checkSimilar as (
+  SELECT PID, (acousticness > 'AVG(acousticness)' - 0.1 AND acousticness < 'AVG(acousticness)' + 0.1) as b_a,
+        (danceability > 'AVG(danceability)' - 0.1 AND danceability < 'AVG(danceability)' + 0.1) as b_d,
+                (energy > 'AVG(energy)' - 0.1 AND energy < 'AVG(energy)' + 0.1) as b_e,
+                (instrumentalness > 'AVG(instrumentalness)' - 0.1 AND instrumentalness < 'AVG(instrumentalness)' + 0.1) as b_i,
+                (valence > 'AVG(valence)' - 0.1 AND valence < 'AVG(valence)' + 0.1) as b_v,
+                (tempo > 'AVG(tempo)' - 10 AND tempo < 'AVG(tempo)' + 10) as b_t,
+                (liveness > 'AVG(liveness)' - 0.1 AND liveness < 'AVG(liveness)' + 0.1) as b_li,
+                (loudness > 'AVG(loudness)' - 5 AND loudness < 'AVG(loudness)' + 5) as b_lo,
+                (speechiness > 'AVG(speechiness)' - 0.1 AND speechiness < 'AVG(speechiness)' + 0.1) as b_s
+  FROM joinedTable
+),
+similarAggreg as (
+  SELECT PID, SUM(b_a) as n_a, SUM(b_d) as n_d, SUM(b_e) as n_e,  SUM(b_i) as n_i,  SUM(b_v) as n_v,  SUM(b_t) as n_t,  SUM(b_li) as n_li,  SUM(b_lo) as n_lo,  SUM(b_s) as n_s 
+  FROM checkSimilar
+  GROUP BY PID
+), 
+dc as (
+    SELECT PID,
+    CASE
+        WHEN n_a > n_d AND n_a > n_e AND n_a > n_i AND n_a > n_v AND n_a > n_t AND n_a > n_li AND n_a > n_lo AND n_a > n_s
+            THEN 'acousticness'
+        WHEN n_d > n_e AND n_d > n_i AND n_d > n_v AND n_d > n_t AND n_d > n_li AND n_d > n_lo AND n_d > n_s
+            THEN 'danceability'
+        WHEN n_e > n_i AND n_e > n_v AND n_e > n_t AND n_e > n_li AND n_e > n_lo AND n_e > n_s
+            THEN 'energy'
+        WHEN n_i > n_v AND n_i > n_t AND n_i > n_li AND n_i > n_lo AND n_i > n_s
+            THEN 'instrumentalness'
+        WHEN n_v > n_t AND n_v > n_li AND n_v > n_lo AND n_v > n_s
+            THEN 'valence'
+        WHEN n_t > n_li AND n_t > n_lo AND n_t > n_s
+            THEN 'tempo'
+        WHEN n_li > n_lo AND n_li > n_s
+            THEN 'liveness'
+        WHEN n_lo > n_s
+            THEN 'loudness'
+        ELSE 'speechiness' 
+    END as defining_char
+    FROM similarAggreg
+)
+SELECT defining_char, count(*) as c
+FROM dc 
+GROUP BY defining_char
+ORDER BY c DESC
+
+  `
+
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
   
 
   
 
-  const getHappy = (req, res) => {
-    var type = req.params.type;
-    var d = req.params.d;
-    var e = req.params.e;
-    var l = req.params.l;
-    var s = req.params.s;
-    var v = req.params.v;
-    const query = `
-      WITH songMood as (
-        SELECT SID, ((valence*${v} + danceability*${d} + energy*${e} + liveness*${l} + speechiness * ${s}) / (${d} + ${e} + ${l} + ${s})) as mood
-        FROM Characteristics
-        WHERE mode = ${type}
-      ), 
-      genrePlaylist as ( 
-        SELECT Playlist.PID, A.SID, A.mood
-        FROM Playlist NATURAL JOIN (SELECT * FROM songMood 
-      WHERE songMood.mood > 0.5) A
-      ), 
-      songsofMood as (
-      SELECT SID, COUNT(PID) as c, mood 
-      FROM genrePlaylist 
-      GROUP BY SID
-      ),
-      withSongName as (
-      SELECT Song.name, Song.artist 
-      FROM Song JOIN songsofMood 
-      ON Song.SID = songsofMood.SID
-      ORDER BY songsofMood.mood DESC
-      )
-      SELECT * FROM withSongName
-      LIMIT 10;
-    `
-  
-    connection.query(query, (err, rows, fields) => {
-      if (err) console.log(err);
-      else res.json(rows);
-    });
-  };
-  
-
-
-  const getRecs = (req, res) => {
-    var song = req.params.song;
-    console.log(song)
-    const query = `
-    WITH targetSID as (
-      SELECT SID
-        FROM Song 
-        WHERE name LIKE  '%${song}%'
-        LIMIT 1
+const getHappy = (req, res) => {
+  var type = req.params.type;
+  var d = req.params.d;
+  var e = req.params.e;
+  var l = req.params.l;
+  var s = req.params.s;
+  var v = req.params.v;
+  const query = `
+    WITH songMood as (
+      SELECT SID, ((valence*${v} + danceability*${d} + energy*${e} + liveness*${l} + speechiness * ${s}) / (${d} + ${e} + ${l} + ${s})) as mood
+      FROM Characteristics
+      WHERE mode = ${type}
     ), 
-    playlistOfSong as (
-      SELECT Playlist.PID, Playlist.SID
-      FROM Playlist 
-      WHERE Playlist.PID IN (
-          SELECT PID FROM Playlist WHERE SID = (SELECT * FROM targetSID)
-        ) 
-      AND SID != (SELECT * FROM targetSID)
+    genrePlaylist as ( 
+      SELECT Playlist.PID, A.SID, A.mood
+      FROM Playlist NATURAL JOIN (SELECT * FROM songMood 
+    WHERE songMood.mood > 0.5) A
+    ), 
+    songsofMood as (
+    SELECT SID, COUNT(PID) as c, mood 
+    FROM genrePlaylist 
+    GROUP BY SID
     ),
-    targetCount as (
-        SELECT *
-        FROM Characteristics
-        WHERE SID = (SELECT * FROM targetSID)
-    ),
-    songCounts as (
-      SELECT SID, COUNT(*) as num
-      FROM playlistOfSong
-      GROUP BY SID
-    ),
-    songChar as (
-        SELECT Song.SID, Song.name, Song.artist, songCounts.num, acousticness, danceability, energy, instrumentalness, valence, tempo, liveness, loudness, speechiness
-        FROM songCounts NATURAL JOIN Song NATURAL JOIN Characteristics
-        ORDER BY songCounts.num DESC
-    ),
-    attribDiff as (
-        SELECT S.SID, S.name, S.artist, S.num, ABS(ABS(S.acousticness - T.acousticness) + ABS(S.danceability - T.danceability) + 
-                    ABS(S.energy - T.energy) + ABS(S.instrumentalness - T.instrumentalness) + 
-                        ABS(S.valence - T.valence) + ABS(S.tempo - T.tempo) + ABS(S.liveness - T.liveness) + 
-                            ABS(S.loudness - T.loudness) + ABS(S.speechiness - T.speechiness)) / S.num as diff
-        FROM songChar S, targetCount T
+    withSongName as (
+    SELECT Song.name, Song.artist 
+    FROM Song JOIN songsofMood 
+    ON Song.SID = songsofMood.SID
+    ORDER BY songsofMood.mood DESC
     )
-    SELECT name, artist, num
-    FROM attribDiff
-    ORDER BY diff ASC    
+    SELECT * FROM withSongName
     LIMIT 10;
-    `
+  `
+
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
   
-    connection.query(query, (err, rows, fields) => {
-      if (err) console.log(err);
-      else res.json(rows);
-    });
-  };
+
+
+const getRecs = (req, res) => {
+  var song = req.params.song;
+  console.log(song)
+  const query = `
+  WITH targetSID as (
+    SELECT SID
+      FROM Song 
+      WHERE name LIKE  '%${song}%'
+      LIMIT 1
+  ), 
+  playlistOfSong as (
+    SELECT Playlist.PID, Playlist.SID
+    FROM Playlist 
+    WHERE Playlist.PID IN (
+        SELECT PID FROM Playlist WHERE SID = (SELECT * FROM targetSID)
+      ) 
+    AND SID != (SELECT * FROM targetSID)
+  ),
+  targetCount as (
+      SELECT *
+      FROM Characteristics
+      WHERE SID = (SELECT * FROM targetSID)
+  ),
+  songCounts as (
+    SELECT SID, COUNT(*) as num
+    FROM playlistOfSong
+    GROUP BY SID
+  ),
+  songChar as (
+      SELECT Song.SID, Song.name, Song.artist, songCounts.num, acousticness, danceability, energy, instrumentalness, valence, tempo, liveness, loudness, speechiness
+      FROM songCounts NATURAL JOIN Song NATURAL JOIN Characteristics
+      ORDER BY songCounts.num DESC
+  ),
+  attribDiff as (
+      SELECT S.SID, S.name, S.artist, S.num, ABS(ABS(S.acousticness - T.acousticness) + ABS(S.danceability - T.danceability) + 
+                  ABS(S.energy - T.energy) + ABS(S.instrumentalness - T.instrumentalness) + 
+                      ABS(S.valence - T.valence) + ABS(S.tempo - T.tempo) + ABS(S.liveness - T.liveness) + 
+                          ABS(S.loudness - T.loudness) + ABS(S.speechiness - T.speechiness)) / S.num as diff
+      FROM songChar S, targetCount T
+  )
+  SELECT name, artist, num
+  FROM attribDiff
+  ORDER BY diff ASC    
+  LIMIT 10;
+  `
+
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+const getHigherAcoustic = (req, res) => {
+  var acoustic = req.params.acoustic;
+  const query = `
+  WITH songswithA as (
+    SELECT SID FROM Characteristics 
+        WHERE acousticness <= ${acoustic} + 0.2 OR acousticness >= ${acoustic} - 0.2
+      )
+      SELECT DISTINCT Song.name 
+      FROM songswithA JOIN Song
+        ON songswithA.SID = Song.Sid 
+        JOIN Playlist 
+      ON songswithA.SID = Playlist.SID
+      JOIN Playlists ON Playlists.PID = Playlist.PID
+      ORDER BY Playlists.num_followers DESC
+      LIMIT 10;
+  `
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
   
 
 // (num_grammys, artists)
@@ -455,4 +477,5 @@ module.exports = {
   getDefiningChar: getDefiningChar,
   getHappy: getHappy,
   getRecs: getRecs,
+  getHigherAcoustic: getHigherAcoustic,
 };

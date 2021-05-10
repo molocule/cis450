@@ -1,5 +1,5 @@
 import React from 'react';
-export default class FreqSongsRow extends React.Component {
+export default class SongsRow extends React.Component {
 
 	render() {
 		return (

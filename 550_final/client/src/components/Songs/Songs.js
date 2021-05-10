@@ -1,11 +1,10 @@
 import React, {useState} from 'react';
 import '../../style/Billboard.css';
 import PageNavbar from '../PageNavbar';
-import CharRow from './CharRow';
+import SongRow from './SongRow';
+import SongOnlyRow from './SongOnlyRow';
 import Chart from "react-google-charts";
-
 import Select from "react-select";
-
 import Slider from 'react-rangeslider'
 import 'react-rangeslider/lib/index.css'
 
@@ -14,18 +13,6 @@ const options = [
   { value: 'Minor', label: 'Minor' },
 ]
 
-var options2 = {
-  chart: {
-    type: 'line'
-  },
-  series: [{
-    name: 'sales',
-    data: [30,40,35,50,49,60,70,91,125]
-  }],
-  xaxis: {
-    categories: [1991,1992,1993,1994,1995,1996,1997, 1998,1999]
-  }
-}
 
 
 
@@ -35,7 +22,8 @@ export default class Songs extends React.Component {
 
     this.state = {
       characterList: [],
-      artists: [],
+      songsList: [],
+      acousticList: [],
       song: "",
       text: options[0].value,
       submitted: "Characteristic",
@@ -52,11 +40,12 @@ export default class Songs extends React.Component {
         [ 'Energy', 0], 
         [ 'Valence', 0],
       ],
+      acoustic: 0.1,
     };
     this.handleChange = this.handleChange.bind(this);
     this.getSong = this.getSong.bind(this);
     this.getHappy =this.getHappy.bind(this);
-
+    this.getAcoustic =this.getAcoustic.bind(this);
   };
 
   handleChange(event) {
@@ -106,6 +95,56 @@ export default class Songs extends React.Component {
   }
 
 
+  handleOnChangeAcoustic = (value) => {
+    this.setState({
+      acoustic: value
+    })
+  }
+
+    /* Simple Query: 0. Display SIDs of songs that are similar to song name {song_name}
+    /
+    /
+    */  
+
+    /* Simple Query: ???
+    /
+    /
+    */  
+  getAcoustic() {
+    fetch("http://localhost:8081/acoustic/" + this.state.acoustic,
+    {
+    method: 'GET' // The type of HTTP request.
+    }).then(res => {
+    // Convert the response data to a JSON.
+    return res.json();
+    }, err => {
+    // Print the error if there is one.
+    console.log(err);
+    }).then(songList => {
+    if (!songList) return;
+    var songRows = songList.map((songObject, i) =>
+      <SongOnlyRow
+        songName={songObject.name} 
+      /> 
+    );
+
+    if(songRows.length == 0) {
+      songRows = <p> No Results Found</p>
+    }
+
+    // Set the state of the keywords list to the value returned by the HTTP response from the server.
+    this.setState({
+      acousticList: songRows
+    });
+    }, err => {
+    // Print the error if there is one.
+    console.log(err);
+    });
+  }
+    /* Simple Query: 2. Display song characteristics of a selected song: {song_name}
+    /
+    /
+    */  
   getSong() {
 		fetch("http://localhost:8081/song/" + this.state.song,
 		{
@@ -118,8 +157,7 @@ export default class Songs extends React.Component {
 		console.log(err);
 		}).then(charList => {
 		if (!charList) return;
-    console.log(charList)
-		var charRows = charList.map((charObject, i) =>
+		var charData = charList.map((charObject, i) =>
       [ 
         [ 'Characteristics', 'Measure'], 
         [ 'Acousticness', charObject.acousticness], 
@@ -129,8 +167,10 @@ export default class Songs extends React.Component {
       ]
 		);
 
-    if(charRows.length == 0) {
-      charRows = <p> No Results Found</p>
+    if(charData.length == 0) {
+      charData = <p> No Results Found</p>
+    } else {
+      charData = charData.flat()
     }
 
     const data = [
@@ -141,20 +181,21 @@ export default class Songs extends React.Component {
       ['Houston, TX', 2099000],
       ['Philadelphia, PA', 1526000],
     ]
-    console.log(charRows.flat())
-    console.log(data)
+
 		// Set the state of the keywords list to the value returned by the HTTP response from the server.
 		this.setState({
-			dataChar: charRows.flat()
+			dataChar: charData
 		});
 		}, err => {
 		// Print the error if there is one.
 		console.log(err);
 		});
   }
-
+    /* Complex Query: 2. get happiest songs from happiness heuristic
+    /
+    /
+    */  
   getHappy() {
-      console.log("http://localhost:8081/happy/" + this.state.submitMajor + "/" + this.state.user_input_d +  "/" + this.state.user_input_e +  "/" + this.state.user_input_l +  "/" + this.state.user_input_s +  "/" + this.state.user_input_v)
       fetch("http://localhost:8081/happy/" + this.state.submitMajor + "/" + this.state.user_input_d +  "/" + this.state.user_input_e +  "/" + this.state.user_input_l +  "/" + this.state.user_input_s +  "/" + this.state.user_input_v,
       {
       method: 'GET' // The type of HTTP request.
@@ -164,30 +205,29 @@ export default class Songs extends React.Component {
       }, err => {
       // Print the error if there is one.
       console.log(err);
-      }).then(charList => {
-      if (!charList) return;
-      console.log(charList)
-      var charRows = charList.map((charObject, i) =>
-        <CharRow
-          artists={charObject.artist.replace(/[\[\]']+/g,'')} 
-          name={charObject.name} 
+      }).then(songList => {
+      if (!songList) return;
+      var songRows = songList.map((songObject, i) =>
+        <SongRow
+          artists={songObject.artist.replace(/[\[\]']+/g,'')} 
+          songName={songObject.name} 
         /> 
       );
 
-      if(charRows.length == 0) {
-        charRows = <p> No Results Found</p>
+      if(songRows.length == 0) {
+        songRows = <p> No Results Found</p>
       }
 
       // Set the state of the keywords list to the value returned by the HTTP response from the server.
       this.setState({
-        artists: charRows
+        songsList: songRows
       });
       }, err => {
       // Print the error if there is one.
       console.log(err);
       });
 
-      this.setState({ submitted: this.state.text})
+      this.setState({submitted: this.state.text})
   }
 
   
@@ -302,7 +342,35 @@ export default class Songs extends React.Component {
                 <div className="header"><strong>Song Name</strong></div>
               </div>
               <div className="results-container" id="results">
-                {this.state.artists}
+                {this.state.songsList}
+              </div>
+          </div>
+          </div>
+        </div>
+        <br />
+        <div className="container movies-container">
+        <div className="table-title"><strong>Enter an acousticness value (higher is more acoustic) and see songs with that acoustic value ranked by the number of people who listen to that song in a playlist!<br></br></strong></div>
+          <div className="jumbotron">
+          <div className="songs-container">
+                <br></br>
+                <h5> Acousticness </h5>
+                <Slider
+                  value={this.state.acoustic}
+                  orientation="horizontal"
+                  onChange={this.handleOnChangeAcoustic}
+                  min={0.1}
+                  max={1}
+                  step={0.02}
+                />
+            <br></br>
+            <button id="submitMovieBtn" className="submit-btn" onClick={this.getAcoustic}> Get Songs!</button>
+            <br></br>
+            <br></br>
+              <div className="songs-header">
+                <div className="header"><strong>Song Name</strong></div>
+              </div>
+              <div className="results-container" id="results">
+                {this.state.acousticList}
               </div>
           </div>
           </div>

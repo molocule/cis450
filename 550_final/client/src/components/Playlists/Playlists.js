@@ -38,14 +38,13 @@ export default class Playlists extends React.Component {
     }, err => {
     // Print the error if there is one.
     console.log(err);
-    }).then(charList => {
-    if (!charList) return;
-    console.log(charList)
+    }).then(popList => {
+    if (!popList) return;
     //(PID, percentile_rank, num_followers)
-    const PopPlayRows = charList.map((songObject, i) =>
+    const PopPlayRows = popList.map((songObject, i) =>
     <PopPlaylistRow
-      playlist_appearances={songObject.num_followers} 
-      name={songObject.percentile_rank} 
+      perc_rank = {songObject.percentile_rank} 
+      num_followers={songObject.num_followers} 
     />
     );
 

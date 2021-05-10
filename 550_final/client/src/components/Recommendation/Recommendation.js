@@ -1,45 +1,16 @@
-import React, {useState} from 'react';
+import React from 'react';
 import '../../style/Billboard.css';
 import PageNavbar from '../PageNavbar';
-import CharRow from './CharRow';
-import Chart from "react-google-charts";
-
-import Select from "react-select";
-
-import Slider from 'react-rangeslider'
+import SongRow from './SongRow';
 import 'react-rangeslider/lib/index.css'
-
-const options = [
-  { value: 'Major', label: 'Major' },
-  { value: 'Minor', label: 'Minor' },
-]
-
-var options2 = {
-  chart: {
-    type: 'line'
-  },
-  series: [{
-    name: 'sales',
-    data: [30,40,35,50,49,60,70,91,125]
-  }],
-  xaxis: {
-    categories: [1991,1992,1993,1994,1995,1996,1997, 1998,1999]
-  }
-}
-
-
 
 export default class Recommendation extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      characterList: [],
-      artists: [],
+      songList: [],
       song: "",
-      text: options[0].value,
-      submitted: "Characteristic",
-      submitMajor: 1,
     };
     this.handleChange = this.handleChange.bind(this);
     this.getSong =this.getSong.bind(this);
@@ -51,18 +22,10 @@ export default class Recommendation extends React.Component {
     this.setState({song: event.target.value});
   }
 
-  onChange = selectedOption => {
-    this.setState({ text: selectedOption});
-    if(selectedOption.value == "Major") {
-      this.setState({submitMajor: 1});
-    } else {
-      this.setState({submitMajor: 0});
-    }
-    console.log(`Option selected:`, selectedOption.value);
-  };
-
-
-
+    /* Complex Query:   4. Get similar songs
+    /
+    /
+    */  
   getSong() {
 		fetch("http://localhost:8081/song-rec/" + this.state.song,
 		{
@@ -73,23 +36,22 @@ export default class Recommendation extends React.Component {
 		}, err => {
 		// Print the error if there is one.
 		console.log(err);
-		}).then(charList => {
-		if (!charList) return;
-    console.log(charList)
-		var CharRows = charList.map((songObject, i) =>
-    <CharRow
+		}).then(songList => {
+		if (!songList) return;
+    console.log(songList)
+		var SongRows = songList.map((songObject, i) =>
+    <SongRow
       artists={songObject.artist.replace(/[\[\]']+/g,'')} 
       name={songObject.name} 
-      num={songObject.num}
     />
     );
-    if(CharRows.length == 0) {
-      CharRows = <p> No Results Found</p>
+    if(SongRows.length == 0) {
+      SongRows = <p> No Results Found</p>
     }
 
 		// Set the state of the keywords list to the value returned by the HTTP response from the server.
 		this.setState({
-			dataChar: CharRows
+			songList: SongRows
 		});
 		}, err => {
 		// Print the error if there is one.
@@ -103,7 +65,7 @@ export default class Recommendation extends React.Component {
         <PageNavbar active="dashboard" />
         <br />
         <div className="container movies-container">
-        <div className="table-title"><strong>Enter a song name to view all characteristics of a specific song!</strong></div>
+        <div className="table-title"><strong>Enter a song name to get similar songs!</strong></div>
           <div className="jumbotron">
             <div className="songs-container">
             <form>
@@ -120,7 +82,7 @@ export default class Recommendation extends React.Component {
                 <div className="header"><strong>Song Name</strong></div>
               </div>
               <div className="results-container" id="results">
-                {this.state.dataChar}
+                {this.state.songList}
               </div>
             </div>
           </div>

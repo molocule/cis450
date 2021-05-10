@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React from 'react';
 import '../../style/Billboard.css';
 import PageNavbar from '../PageNavbar';
 import CharRow from './CharRow';
 import GrammyRow from './GrammyRow';
 import Select from "react-select";
+import ArtistRow from './ArtistRow';
 
 const options = [
   { value: 'acousticness', label: 'acousticness' },
@@ -21,11 +22,10 @@ const options = [
 export default class Artists extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      characterList: [],
+      artistList: [],
       grammyArtists: [],
-      artistSongs: [],
+      artistChars: [],
       artist: "",
       text: options[0].value,
       submitted: "Characteristic",
@@ -34,9 +34,11 @@ export default class Artists extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.getArtists = this.getArtists.bind(this);
     this.getCharacteristics =this.getCharacteristics.bind(this);
-
   };
-
+    /* Simple Query:   1. Display artists ranked by the most grammys 
+    /
+    /
+    */  
   componentDidMount() {
     // Send an HTTP request to the server.
     fetch("http://localhost:8081/grammy-artists",
@@ -48,15 +50,13 @@ export default class Artists extends React.Component {
     }, err => {
       // Print the error if there is one.
       console.log(err);
-    }).then(songList => {
-      console.log(songList)
-      if (!songList) return;
-      const GrammyRows = songList.map((songObject, i) =>
+    }).then(artistList => {
+      if (!artistList) return;
+      const GrammyRows = artistList.map((artistObject, i) =>
       <GrammyRow
-        numGrammys={songObject.num_grammys} 
-        artists={songObject.artist.replace(/[\[\]']+/g,'')} 
+        artists={artistObject.artist.replace(/[\[\]']+/g,'')} 
+        numGrammys={artistObject.num_grammys} 
       /> 
-      
     );
 
     this.setState({
@@ -78,7 +78,52 @@ export default class Artists extends React.Component {
     console.log(`Option selected:`, selectedOption.value);
   };
 
+   /* Complex Query 1: Find artist that has the highest range of some characteristic ranked by that range and by popularity
+  /
+  /
+  */   
+  getCharacteristics() {
+      console.log("hello")
+      fetch("http://localhost:8081/characteristics/" + this.state.submittedCharacteristic,
+      {
+      method: 'GET' // The type of HTTP request.
+      }).then(res => {
+      // Convert the response data to a JSON.
+      return res.json();
+      }, err => {
+      // Print the error if there is one.
+      console.log(err);
+      }).then(artistList => {
+      if (!artistList) return;
+      console.log(artistList)
+      var artistRows = artistList.map((artistObject, i) =>
+        <ArtistRow
+          artist={artistObject.artist.replace(/[\[\]']+/g,'')} 
+          characteristic={artistObject.Characteristic_Value} 
+          rank={artistObject.Spotify_Rank} 
+        /> 
+      );
+      if(artistRows.length == 0) {
+        artistRows = <p> No Results Found</p>
+      }
 
+
+      // Set the state of the keywords list to the value returned by the HTTP response from the server.
+      this.setState({
+        artistList: artistRows
+      });
+      }, err => {
+      // Print the error if there is one.
+      console.log(err);
+      });
+
+      this.setState({ submitted: this.state.submittedCharacteristic})
+  }
+
+  /* Simple Query: 5. Display top characteristics of an artist: {artist}
+  /
+  /
+  */  
   getArtists() {
 		fetch("http://localhost:8081/artist/" + this.state.artist,
 		{
@@ -91,23 +136,20 @@ export default class Artists extends React.Component {
 		console.log(err);
 		}).then(charList => {
 		if (!charList) return;
-    console.log(charList)
 		var charRows = charList.map((charObject, i) =>
 			<CharRow
         name={charObject.name}
-        level={charObject.acousticness}
-        rank={charObject.danceability}
+        acousticness={charObject.acousticness_percentile}
+        danceability={charObject.danceability_percentile}
 			/> 
 		);
-    console.log(charRows)
 
-    console.log(charRows.length);
     if(charRows.length == 0) {
-      charRows = <p> No Results Found</p>
+      charRows = <p> No Results Found. Try entering a different artist!</p>
     }
 		// Set the state of the keywords list to the value returned by the HTTP response from the server.
 		this.setState({
-			artistSongs: charRows
+			artistChars: charRows
 		});
 		}, err => {
 		// Print the error if there is one.
@@ -115,43 +157,6 @@ export default class Artists extends React.Component {
 		});
   }
 
-  getCharacteristics() {
-      console.log("hello")
-      fetch("http://localhost:8081/characteristics/" + this.state.submittedCharacteristic,
-      {
-      method: 'GET' // The type of HTTP request.
-      }).then(res => {
-      // Convert the response data to a JSON.
-      return res.json();
-      }, err => {
-      // Print the error if there is one.
-      console.log(err);
-      }).then(charList => {
-      if (!charList) return;
-      console.log(charList)
-      var charRows = charList.map((charObject, i) =>
-        <CharRow
-          name={charObject.artist.replace(/[\[\]']+/g,'')} 
-          level={charObject.Characteristic_Value} 
-          rank={charObject.Spotify_Rank} 
-        /> 
-      );
-      if(charRows.length == 0) {
-        charRows = <p> No Results Found</p>
-      }
-
-
-      // Set the state of the keywords list to the value returned by the HTTP response from the server.
-      this.setState({
-        characterList: charRows
-      });
-      }, err => {
-      // Print the error if there is one.
-      console.log(err);
-      });
-
-      this.setState({ submitted: this.state.submittedCharacteristic})
-    }
 
   
   render() {    
@@ -193,7 +198,7 @@ export default class Artists extends React.Component {
                 <div className="header"><strong>Spotify Rank</strong></div>
               </div>
               <div className="results-container" id="results">
-                {this.state.characterList}
+                {this.state.artistList}
               </div>
             </div>
           </div>
@@ -205,7 +210,7 @@ export default class Artists extends React.Component {
             <div className="songs-container">
             <form>
               <label>
-                Name: 
+                Name:
                 <input type="text" value={this.state.artist} onChange={this.handleChange} />
               </label>
             </form>
@@ -219,7 +224,7 @@ export default class Artists extends React.Component {
                 <div className="header"><strong>Danceability</strong></div>
               </div>
               <div className="results-container" id="results">
-              {this.state.artistSongs}
+              {this.state.artistChars}
               </div>
             </div>
           </div>
@@ -228,19 +233,3 @@ export default class Artists extends React.Component {
     );
   };
 };
-
-
-
-{/* <form>
-<label>
-  Name:
-  <input type="text" value={this.state.artist} onChange={this.handleChange} />
-</label>
-</form>
-<button id="submitMovieBtn" className="submit-btn" onClick={this.getArtists}> Submit</button>
-{this.state.artistSongs}
-<Select
-  options={options}
-  onChange={this.onChange}
-  value={this.state.text}
-/> */}

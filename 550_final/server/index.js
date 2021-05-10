@@ -34,7 +34,10 @@ app.get('/happy/:type/:d/:e/:l/:s/:v', routes.getHappy);
 
 app.get('/song-rec/:song', routes.getRecs);
 
+app.get('/acoustic/:acoustic', routes.getHigherAcoustic);
+
 app.get('/getall', routes.getAll);
+
 
 app.listen(8081, () => {
 	console.log(`Server listening on PORT 8081`);

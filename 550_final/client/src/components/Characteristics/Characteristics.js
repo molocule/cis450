@@ -1,15 +1,13 @@
 import React from 'react';
 import '../../style/Billboard.css';
 import PageNavbar from '../PageNavbar';
-import FreqSongsRow from './FreqSongsRow';
+import CharRow from './CharRow';
 
 export default class Characteristics extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      freqSongs: [],
-      popPlaylists: []
+      charList: [],
     };
   };
 
@@ -24,17 +22,16 @@ export default class Characteristics extends React.Component {
 		}, err => {
 		  // Print the error if there is one.
 		  console.log(err);
-		}).then(songList => {
-      console.log(songList)
-		  if (!songList) return;
-      const FreqSongsRows = songList.map((songObject, i) =>
-      <FreqSongsRow
-        name={songObject.defining_char}
-        playlist_appearances={songObject.c} 
+		}).then(charList => {
+		  if (!charList) return;
+      const CharRows = charList.map((charObject, i) =>
+      <CharRow
+        char={charObject.defining_char}
+        playlist_appearances={charObject.c} 
       />
 		);
     this.setState({
-        freqSongs: FreqSongsRows
+        charList: CharRows
     });
 		}, err => {
 		  console.log(err);
@@ -56,7 +53,7 @@ export default class Characteristics extends React.Component {
                 <div className="header"><strong>Number of Playlists</strong></div>
               </div>
               <div className="results-container" id="results">
-                {this.state.freqSongs}
+                {this.state.charList}
               </div>
             </div>
           </div>
@@ -66,37 +63,3 @@ export default class Characteristics extends React.Component {
   };
 };
 
-
-
-  /*
-	submitCategory() {
-		// Send an HTTP request to the server.
-		fetch("http://localhost:8081/getall",
-		{
-		  method: 'GET' // The type of HTTP request.
-		}).then(res => {
-		  // Convert the response data to a JSON.
-		  return res.json();
-		}, err => {
-		  // Print the error if there is one.
-		  console.log(err);
-		}).then(songList => {
-		  if (!songList) return;
-      const BillboardRankingRows = songList.map((songObject, i) =>
-			<BillboardRankingRow
-        year={songObject.year} 
-        artists={songObject.artist.replace(/[\[\]']+/g,'')} 
-        name={songObject.name}
-			/> 
-      
-		);
-
-    this.setState({
-      songs: BillboardRankingRows
-    });
-
-		}, err => {
-		  console.log(err);
-		});
-	};
-  */
